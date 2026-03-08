@@ -108,7 +108,7 @@ function draw() {
   else if (shapeState === 2.5 && elapsed > 76000) shapeState = 3;
   else if (shapeState === 3 && elapsed > 90000) shapeState = 4;
   else if (shapeState === 4 && elapsed > 105000) shapeState = 4.5;
-  else if (shapeState === 4.5 && elapsed > 119000) shapeState = 5;
+  else if (shapeState === 4.5 && elapsed > 117000) shapeState = 5;
   else if (shapeState === 5 && elapsed > 133000) shapeState = 6;
   else if (shapeState === 6 && elapsed > 151000) shapeState = 7;
   else if (shapeState === 7 && elapsed > 170000) shapeState = 8;
@@ -221,30 +221,16 @@ class Particle {
       this.x += sin(this.t) * 0.5;
       if (this.y > height) this.y = 0;
       return;
-    } else if (shapeState === 7) {
-      // Giữ nguyên hiệu ứng bay lơ lửng của stage 7
+    } else if (shapeState >= 7) {
       this.x += this.vx * 0.1;
       this.y += this.vy * 0.1;
       if (elapsed > 180000) this.size *= 0.99;
       return;
-    } else if (shapeState === 8) {
-      // HIỆU ỨNG VỤ NỔ KHÔNG GIAN
-      if (!this.exploded) {
-        // Tạo lực đẩy nổ cực mạnh từ tâm ra ngoài
-        let angle = random(TWO_PI);
-        let force = random(5, 15);
-        this.vx = cos(angle) * force;
-        this.vy = sin(angle) * force;
-        this.exploded = true; // Đánh dấu đã nổ để không tạo lực lại
-      }
     }
-    // Hạt bay đi và mờ dần (giảm size/alpha)
-    this.x += this.vx;
-    this.y += this.vy;
-    this.size *= 0.95; // Hạt nhỏ dần rồi biến mất
-    // Khi hạt quá nhỏ, có thể cho chuyển sang stage 9
-    // (Lưu ý: Logic chuyển stage 9 nên để ở hàm draw chính)
-    return;
+
+    this.x = lerp(this.x, tx, 0.1);
+    this.y = lerp(this.y, ty, 0.05);
+    this.t += 0.02;
   }
 
   show() {
